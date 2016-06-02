@@ -8,11 +8,13 @@ import java.util.Scanner;
 public class Dictionary 
 {
 	private final HashMap<String, Double> words;
+	private final String name;
 	
-	public Dictionary(File f) throws FileNotFoundException
+	public Dictionary(String name, File f) throws FileNotFoundException
 	{
 		words = new HashMap<>();
 		buildWordsList(f);
+		this.name = name;
 	}
 	
 	private void buildWordsList(File f) throws FileNotFoundException
@@ -42,16 +44,23 @@ public class Dictionary
 		System.out.println(words.size()+" mots chargés.");
 	}
 	
+	
+	
+	public HashMap<String, Double> getWords() 
+	{
+		return words;
+	}
+
 	private double getProbability(String s)
 	{
 		Double occurence = words.get(s);
 		if(occurence == null) return 0;
-		return occurence/words.size();
+		return occurence/(double)words.size();
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException 
 	{
 		System.out.println("UNIT TEST FOR DICTIONARY");
-		Dictionary d = new Dictionary(new File("germinal.txt"));
+		Dictionary d = new Dictionary("Français", new File("germinal.txt"));
 	}
 }
