@@ -4,15 +4,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Dictionaries 
+public class Corrector 
 {
-	public static Dictionary selectBestDictionary(File f, Dictionary... dictionaries)
+	private final Dictionary[] dictionaries;
+	private Dictionary currentDictionary;
+	
+	
+	
+	public Corrector(Dictionary... dictionaries)
 	{
-		if(dictionaries.length == 0) return null;
-		
+		if(dictionaries.length == 0) throw new IllegalArgumentException("Provide at least one dictionary to work with!");
+		this.dictionaries = dictionaries;
+		this.currentDictionary = dictionaries[0];
+	}
+	
+	
+	public void selectBestDictionary(File f)
+	{
 		int[] errors = new int[dictionaries.length];
-		
-		
 		
 		try(Scanner s = new Scanner(f))
 		{
@@ -40,7 +49,6 @@ public class Dictionaries
 		catch(FileNotFoundException e)
 		{
 			System.err.println("Couldn't find the file");
-			return null;
 		}
 		
 		
@@ -62,6 +70,6 @@ public class Dictionaries
 		}
 		
 		System.out.println("Best dictionary for the text \""+f.getName()+"\" is "+dictionaries[index].getName()+" (errors nb : "+errors[index]+")");
-		return dictionaries[index];
+		this.currentDictionary = dictionaries[index];
 	}
 }

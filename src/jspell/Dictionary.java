@@ -58,8 +58,8 @@ public class Dictionary
 	{
 		return words;
 	}
-
-	private double getProbability(String s)
+	
+	public double getProbability(String s)
 	{
 		Double occurence = words.get(s);
 		if(occurence == null) return 0;
@@ -73,7 +73,9 @@ public class Dictionary
 		Dictionary fr = new Dictionary("Français", new File("dic/francais.txt"));
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
-		Dictionaries.selectBestDictionary(new File("shakespeare.txt"), fr, en);
-		Dictionaries.selectBestDictionary(new File("demain.txt"), fr, en);
+		Corrector corr = new Corrector(fr, en);
+		
+		corr.selectBestDictionary(new File("shakespeare.txt"));
+		corr.selectBestDictionary(new File("demain.txt"));
 	}
 }
