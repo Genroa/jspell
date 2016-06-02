@@ -72,4 +72,12 @@ public class Corrector
 		System.out.println("Best dictionary for the text \""+f.getName()+"\" is "+dictionaries[index].getName()+" (errors nb : "+errors[index]+")");
 		this.currentDictionary = dictionaries[index];
 	}
+
+
+	public Dictionary getCurrentDictionary() 
+	{
+		return currentDictionary;
+	}
+	
+	
 }
