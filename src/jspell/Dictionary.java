@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Dictionary 
 {
-	private final HashMap<String, Double> words;
+	private final HashMap<String, Integer> words;
 	private final String name;
 	
 	public Dictionary(String name, File f) throws FileNotFoundException
@@ -28,10 +28,10 @@ public class Dictionary
 				if(!w.isEmpty())
 				{
 					w = w.toLowerCase();
-					Double occurences = words.get(w);
+					Integer occurences = words.get(w);
 					if(occurences == null)
 					{
-						words.put(w, 1.0);
+						words.put(w, 1);
 					}
 					else
 					{
@@ -46,7 +46,7 @@ public class Dictionary
 	
 	public boolean containsWord(String w)
 	{
-		return words.containsKey(w);
+		return words.containsKey(w.toLowerCase());
 	}
 	
 	public String getName() 
@@ -54,17 +54,23 @@ public class Dictionary
 		return name;
 	}
 
-	public HashMap<String, Double> getWords() 
+	public HashMap<String, Integer> getWords() 
 	{
 		return words;
 	}
 	
 	public double getProbability(String s)
 	{
-		Double occurence = words.get(s);
+		Integer occurence = words.get(s);
 		if(occurence == null) return 0;
-		return occurence/(double)words.size();
+		return (double)occurence/(double)words.size();
 	}
+	
+	public void addToDictionary(String s)
+	{
+		words.put(s, 1);
+	}
+	
 	
 	public static void main(String[] args) throws FileNotFoundException 
 	{
@@ -77,5 +83,7 @@ public class Dictionary
 		
 		corr.selectBestDictionary(new File("shakespeare.txt"));
 		corr.selectBestDictionary(new File("demain.txt"));
+		
+		corr.annotateText(new File("shakespeare.txt"), new File("output.txt"));
 	}
 }
