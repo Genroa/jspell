@@ -44,8 +44,16 @@ public class Dictionary
 		System.out.println(words.size()+" mots chargés.");
 	}
 	
+	public boolean containsWord(String w)
+	{
+		return words.containsKey(w);
+	}
 	
-	
+	public String getName() 
+	{
+		return name;
+	}
+
 	public HashMap<String, Double> getWords() 
 	{
 		return words;
@@ -61,6 +69,11 @@ public class Dictionary
 	public static void main(String[] args) throws FileNotFoundException 
 	{
 		System.out.println("UNIT TEST FOR DICTIONARY");
-		Dictionary d = new Dictionary("Français", new File("germinal.txt"));
+		
+		Dictionary fr = new Dictionary("Français", new File("dic/francais.txt"));
+		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
+		
+		Dictionaries.selectBestDictionary(new File("shakespeare.txt"), fr, en);
+		Dictionaries.selectBestDictionary(new File("demain.txt"), fr, en);
 	}
 }
