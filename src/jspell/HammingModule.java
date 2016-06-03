@@ -83,7 +83,7 @@ public class HammingModule implements Module
 		}
 		return null;
 	}
-
+	
 	@Override
 	public String[] getNearestSiblings(String word)
 	{
@@ -98,14 +98,14 @@ public class HammingModule implements Module
 		/* Pour regarder dans le tampon */
 		for (int count = 0; count <= 10; count++)
 		{
-			/* Parcours des mots d'une distance de séparé de 2 */
+			/* Parcours des mots d'une distance de sï¿½parï¿½ de 2 */
 			Set<String> set = new HashSet<>(harmmingWords.get(distanceFromOrigin + count));
 			if(distanceFromOrigin - count >= 0)
 				set.addAll(harmmingWords.get(distanceFromOrigin - count));
 			for(String current : set)
 			{
 				int distanceFromWord = hammingDistance(word, current);
-				/* On regarde si il est plus proche que les mots sauvegardé */
+				/* On regarde si il est plus proche que les mots sauvegardï¿½ */
 				for(int i = 0; i <= (resultDistance.length - 1); i++)
 				{
 					if(resultDistance[i] == -1 || 
@@ -113,7 +113,7 @@ public class HammingModule implements Module
 						(resultDistance[i] == distanceFromWord && 
 							dictionary.getProbability(result[i]) > dictionary.getProbability(current)))
 					{
-						/* Décalage */
+						/* Dï¿½calage */
 						for(int j = 1; j <= (resultDistance.length - 1) - i; j++)
 						{
 							resultDistance[resultDistance.length - j] = resultDistance[resultDistance.length - 1 - j];
@@ -133,7 +133,7 @@ public class HammingModule implements Module
 	{
 		System.out.println("UNITARY TEST HAMMING MODULE");
 
-		Dictionary fr = new Dictionary("Français", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Franï¿½ais", new File("dic/francais.txt"));
 		
 		HammingModule hm = new HammingModule(fr);
 		
