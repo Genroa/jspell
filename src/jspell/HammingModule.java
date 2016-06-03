@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class HammingModule implements Module
@@ -35,50 +36,60 @@ public class HammingModule implements Module
 	
 	private int hammingDistance(String word1, String word2)
 	{
+		/* decoupage des mots en tableau de caractère */
 		char[] s1 = word1.toCharArray();
 	    char[] s2 = word2.toCharArray();
 
+	    /* calcul de la plus petite et grande taille */
 	    int shorter = Math.min(s1.length, s2.length);
 	    int longest = Math.max(s1.length, s2.length);
 
-	    int result1 = 0;
+	    /* calcul à gauche */
+	    int leftResult = 0;
 	    for (int i=0; i<shorter; i++)
 	    {
-	        if (s1[i] != s2[i]) result1++;
+	        if (s1[i] != s2[i]) leftResult++;
 	    }
-	    result1 += longest - shorter;
+	    leftResult += longest - shorter;
 	    
-	    int result2 = 0;
+	    /* calcul à droite */
+	    int rightResult = 0;
 	    for (int i=0; i<shorter; i++)
 	    {
-	        if (s1[(s1.length - 1) - i] != s2[(s2.length - 1) - i]) result2++;
+	        if (s1[(s1.length - 1) - i] != s2[(s2.length - 1) - i]) rightResult++;
 	    }
-	    result2 += longest - shorter;
+	    rightResult += longest - shorter;
 
-	    return Math.min(result1, result2);
+	    /* on renvoie la plus petite distance */
+	    return Math.min(leftResult, rightResult);
 	}
 	
 	private String averageString(Set<String> set)
 	{
-		String[] existingString = new String[20];
+		/* sauvegarde des mots pour eviter de reparcourir l'ensemble */
+		Map<Integer, String> existingString = new HashMap<>();
+		/* compteur de mots et somme de la longueur des mots */
 		int nbWord = 0, sumLength = 0;
+		/* pour chaque mot */
 		for(String word : set)
 		{
 			nbWord++;
 			int wordLength = word.length();
 			sumLength+=wordLength;
-			if(wordLength < 20 && existingString[wordLength] == null)
-				existingString[wordLength]=word;
+			/* si il y a pas deja un mot sauvegarder on save */
+			if(!existingString.containsKey(wordLength))
+				existingString.put(wordLength, word);
 		}
 		int averageLength = sumLength/nbWord;
 		int i = 0;
-		System.out.println(averageLength);
-		while(averageLength + i < 20 || averageLength - i >= 0)
+		String result;
+		/* on modifie pas existingString donc sert à vérifié qu'il y a un mot */
+		while(!existingString.isEmpty())
 		{
-			if(averageLength + i < 20 && existingString[averageLength + i] != null)
-				return existingString[averageLength + i];
-			if(averageLength - i >= 0 && existingString[averageLength - i] != null)
-				return existingString[averageLength - i];
+			if((result = existingString.get(averageLength + i)) != null)
+				return result;
+			if((result = existingString.get(averageLength - i)) != null)
+				return result;
 			i++;
 		}
 		return null;
@@ -95,34 +106,38 @@ public class HammingModule implements Module
 		Arrays.fill(resultDistance, -1);
 		
 		int distanceFromOrigin = hammingDistance(origin, word);
-		/* Pour regarder dans le tampon */
-		for (int count = 0; count <= 10; count++)
+		/* Création d'un ensemble de mots ayant une distance depuis l'origin entre distanceFromOrigin - 2 et + 2*/
+		Set<String> set = new HashSet<>();
+		for (int count = 0; count <= 2; count++)
 		{
-			/* Parcours des mots d'une distance de sï¿½parï¿½ de 2 */
-			Set<String> set = new HashSet<>(harmmingWords.get(distanceFromOrigin + count));
-			if(distanceFromOrigin - count >= 0)
-				set.addAll(harmmingWords.get(distanceFromOrigin - count));
-			for(String current : set)
+			/* création du set avec le mot d'une distance de count */
+			set.addAll(harmmingWords.get(distanceFromOrigin + count));
+			set.addAll(harmmingWords.get(distanceFromOrigin - count));
+		}
+		/* Pour chaque mot du set */
+		for(String current : set)
+		{
+			int distanceFromWord = hammingDistance(word, current);
+			/* parcours des mots sauvegardees */
+			for(int i = 0; i <= (resultDistance.length - 1); i++)
 			{
-				int distanceFromWord = hammingDistance(word, current);
 				/* On regarde si il est plus proche que les mots sauvegardï¿½ */
-				for(int i = 0; i <= (resultDistance.length - 1); i++)
+				if(resultDistance[i] == -1 || 
+					resultDistance[i] > distanceFromWord || 
+					(resultDistance[i] == distanceFromWord && 
+						dictionary.getProbability(result[i]) > dictionary.getProbability(current)))
 				{
-					if(resultDistance[i] == -1 || 
-						resultDistance[i] > distanceFromWord || 
-						(resultDistance[i] == distanceFromWord && 
-							dictionary.getProbability(result[i]) > dictionary.getProbability(current)))
+					/* On decale s'il il est plus proche */
+					for(int j = 1; j <= (resultDistance.length - 1) - i; j++)
 					{
-						/* Dï¿½calage */
-						for(int j = 1; j <= (resultDistance.length - 1) - i; j++)
-						{
-							resultDistance[resultDistance.length - j] = resultDistance[resultDistance.length - 1 - j];
-							result[resultDistance.length - j] = result[resultDistance.length - 1 - j];
-						}
-						resultDistance[i] = distanceFromWord;
-						result[i] = current;
-						break;
+						resultDistance[resultDistance.length - j] = resultDistance[resultDistance.length - 1 - j];
+						result[resultDistance.length - j] = result[resultDistance.length - 1 - j];
 					}
+					
+					/* On sauvegarde la nouvelle valeur */
+					resultDistance[i] = distanceFromWord;
+					result[i] = current;
+					break;
 				}
 			}
 		}
@@ -133,12 +148,17 @@ public class HammingModule implements Module
 	{
 		System.out.println("UNITARY TEST HAMMING MODULE");
 
-		Dictionary fr = new Dictionary("Franï¿½ais", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
 		
 		HammingModule hm = new HammingModule(fr);
 		
 		String[] str = hm.getNearestSiblings("praphrase");
-		
+		System.out.println(Arrays.toString(str));
+		str = hm.getNearestSiblings("alfabet");
+		System.out.println(Arrays.toString(str));
+		str = hm.getNearestSiblings("propocition");
+		System.out.println(Arrays.toString(str));
+		str = hm.getNearestSiblings("apelle");
 		System.out.println(Arrays.toString(str));
 	}
 	
