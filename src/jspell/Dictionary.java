@@ -2,6 +2,7 @@ package jspell;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -21,7 +22,7 @@ public class Dictionary
 	
 	private void buildWordsList(File f) throws FileNotFoundException
 	{
-		try(Scanner s = new Scanner(f))
+		try(Scanner s = new Scanner(f, StandardCharsets.UTF_8.name()))
 		{
 			s.useDelimiter("[\\p{Punct}\\p{Space}]");
 			while(s.hasNext())
@@ -43,7 +44,7 @@ public class Dictionary
 			}
 		}
 		
-		System.out.println(words.size()+" mots charg�s.");
+		System.out.println(words.size()+" mots chargés.");
 	}
 	
 	public boolean containsWord(String w)
@@ -83,7 +84,7 @@ public class Dictionary
 	{
 		System.out.println("UNIT TEST FOR DICTIONARY");
 		
-		Dictionary fr = new Dictionary("Fran�ais", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
 		Corrector corr = new Corrector(fr, en);
@@ -92,5 +93,6 @@ public class Dictionary
 		corr.selectBestDictionary(new File("demain.txt"));
 		
 		corr.annotateText(new File("shakespeare.txt"), new File("output.txt"));
+		corr.annotateText(new File("germinal.txt"), new File("output2.txt"));
 	}
 }

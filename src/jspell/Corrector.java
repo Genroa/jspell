@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Corrector 
@@ -23,7 +24,7 @@ public class Corrector
 	{
 		int[] errors = new int[dictionaries.length];
 		
-		try(Scanner s = new Scanner(f))
+		try(Scanner s = new Scanner(f, StandardCharsets.UTF_8.name()))
 		{
 			s.useDelimiter("[\\p{Punct}\\p{Space}]");
 			// For each word
@@ -89,11 +90,11 @@ public class Corrector
 		System.out.println("Anotating the text \""+input.getName()+"\" and saving it to \""+output.getName()+"\"...");
 		selectBestDictionary(input);
 		
-		try(FileWriter fw = new FileWriter(output); Scanner s = new Scanner(input))
+		try(FileWriter fw = new FileWriter(output); Scanner s = new Scanner(input, StandardCharsets.UTF_8.name()))
 		{
 			boolean punct =true;
 			
-			Scanner firstCharTester = new Scanner(input);
+			Scanner firstCharTester = new Scanner(input, StandardCharsets.UTF_8.name());
 			firstCharTester.useDelimiter("[\\p{Alnum}]");
 			String firstToken = firstCharTester.next();
 			
@@ -119,7 +120,7 @@ public class Corrector
 					}
 					else
 					{
-						System.out.println("Word \""+w+"\" mispelled");
+						//System.out.println("Word \""+w+"\" mispelled");
 						StringBuilder spelling = new StringBuilder("<spell>"+w+"|");
 						String[] siblings = getNearestSiblings(w);
 						for(String sibling : siblings) spelling.append(sibling).append(",");
