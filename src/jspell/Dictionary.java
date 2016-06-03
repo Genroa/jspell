@@ -93,6 +93,6 @@ public class Dictionary
 		corr.selectBestDictionary(new File("demain.txt"));
 		
 		corr.annotateText(new File("shakespeare.txt"), new File("output.txt"));
-		corr.annotateText(new File("germinal.txt"), new File("output2.txt"));
+		corr.annotateText(new File("demain.txt"), new File("output2.txt"));
 	}
 }
