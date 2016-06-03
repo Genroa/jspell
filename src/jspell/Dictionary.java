@@ -9,12 +9,14 @@ public class Dictionary
 {
 	private final HashMap<String, Integer> words;
 	private final String name;
+	private final ModuleAggregator siblingsSearcher;
 	
 	public Dictionary(String name, File f) throws FileNotFoundException
 	{
 		words = new HashMap<>();
 		buildWordsList(f);
 		this.name = name;
+		this.siblingsSearcher = new ModuleAggregator(this);
 	}
 	
 	private void buildWordsList(File f) throws FileNotFoundException
@@ -41,7 +43,7 @@ public class Dictionary
 			}
 		}
 		
-		System.out.println(words.size()+" mots chargés.");
+		System.out.println(words.size()+" mots chargï¿½s.");
 	}
 	
 	public boolean containsWord(String w)
@@ -71,12 +73,17 @@ public class Dictionary
 		words.put(s, 1);
 	}
 	
+	public String[] getNearestSiblings(String word)
+	{
+		return siblingsSearcher.getNearestSiblings(word);
+	}
+	
 	
 	public static void main(String[] args) throws FileNotFoundException 
 	{
 		System.out.println("UNIT TEST FOR DICTIONARY");
 		
-		Dictionary fr = new Dictionary("Français", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Franï¿½ais", new File("dic/francais.txt"));
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
 		Corrector corr = new Corrector(fr, en);

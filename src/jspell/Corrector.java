@@ -11,13 +11,11 @@ public class Corrector
 	private final Dictionary[] dictionaries;
 	private Dictionary currentDictionary;
 	
-	
-	
 	public Corrector(Dictionary... dictionaries)
 	{
 		if(dictionaries.length == 0) throw new IllegalArgumentException("Provide at least one dictionary to work with!");
 		this.dictionaries = dictionaries;
-		this.currentDictionary = dictionaries[0];
+		this.currentDictionary = dictionaries[0];	
 	}
 	
 	
@@ -61,7 +59,7 @@ public class Corrector
 		// Pour chaque nombre d'erreurs dans un dictionnaire
 		for(int errorNumber : errors)
 		{
-			// Si ce dictionnaire a moins de mots inconnus que les précédents
+			// Si ce dictionnaire a moins de mots inconnus que les prï¿½cï¿½dents
 			if(errorNumber < maxErrors)
 			{
 				// On le garde
@@ -79,6 +77,11 @@ public class Corrector
 	public Dictionary getCurrentDictionary() 
 	{
 		return currentDictionary;
+	}
+	
+	public String[] getNearestSiblings(String word)
+	{
+		return currentDictionary.getNearestSiblings(word);
 	}
 	
 	public void annotateText(File input, File output)
@@ -117,7 +120,12 @@ public class Corrector
 					else
 					{
 						System.out.println("Word \""+w+"\" mispelled");
-						fw.write("<spell>"+w+"|</spell>");
+						StringBuilder spelling = new StringBuilder("<spell>"+w+"|");
+						String[] siblings = getNearestSiblings(w);
+						for(String sibling : siblings) spelling.append(sibling).append(",");
+						spelling.setLength(spelling.length()-1);
+						spelling.append("</spell>");
+						fw.write(spelling.toString());
 					}
 				}
 				else
