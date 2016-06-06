@@ -15,6 +15,7 @@ public class ModuleAggregator implements Module
 		this.dictionary = d;
 		this.modules = new LinkedList<Module>();
 			modules.add(new HammingModule(dictionary));
+			modules.add(new DamerauLevenshteinModule(dictionary));
 	}
 	
 	@Override
@@ -29,11 +30,11 @@ public class ModuleAggregator implements Module
 		return words.toArray(new String[0]);
 	}
 	
-	public void updateModule()
+	public void updateModule(String newWord)
 	{
 		for(Module m : modules)
 		{
-			m.updateModule();
+			m.updateModule(newWord);
 		}
 	}
 }

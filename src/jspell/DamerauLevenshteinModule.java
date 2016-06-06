@@ -30,9 +30,6 @@ public class DamerauLevenshteinModule implements Module
 			{
 				if(values[i]==-1 || values[i] > res)
 				{
-					System.out.println("CURRENT:"+w);
-					System.out.println(Arrays.toString(siblings));
-					System.out.println(Arrays.toString(values));
 					for(int j=values.length-1; j>i; j--)
 					{
 						values[j] = values[j-1];
@@ -45,7 +42,7 @@ public class DamerauLevenshteinModule implements Module
 			}
 		}
 		
-		//System.out.println("DL RESULTS="+Arrays.toString(siblings)+"\n"+Arrays.toString(values));
+		System.out.println("DL RESULTS="+Arrays.toString(siblings)+"\n"+Arrays.toString(values));
 		return siblings;
 	}
 	
@@ -91,11 +88,6 @@ public class DamerauLevenshteinModule implements Module
 		return values[l1][l2];
 	}
 	
-	@Override
-	public void updateModule() 
-	{
-		
-	}
 	
 	public static void main(String[] args) throws FileNotFoundException 
 	{
@@ -106,5 +98,6 @@ public class DamerauLevenshteinModule implements Module
 		DamerauLevenshteinModule hm = new DamerauLevenshteinModule(fr);
 		
 		String[] str = hm.getNearestSiblings("paraphrase");
+		System.out.println(Arrays.toString(str));
 	}
 }

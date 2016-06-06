@@ -44,7 +44,7 @@ public class HammingModule implements Module
 	    int shorter = Math.min(s1.length, s2.length);
 	    int longest = Math.max(s1.length, s2.length);
 
-	    /* calcul � gauche */
+	    /* calcul à gauche */
 	    int leftResult = 0;
 	    for (int i=0; i<shorter; i++)
 	    {
@@ -163,8 +163,15 @@ public class HammingModule implements Module
 	}
 	
 	@Override
-	public void updateModule() 
+	public void updateModule(String newWord) 
 	{
-		
+		Integer distance = hammingDistance(origin, newWord);
+		Set<String> set = harmmingWords.get(distance);
+		if(set == null)
+		{
+			set = new HashSet<>();
+			harmmingWords.put(distance, set);
+		}
+		set.add(newWord);
 	}
 }
