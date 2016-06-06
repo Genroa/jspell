@@ -28,5 +28,12 @@ public class ModuleAggregator implements Module
 		
 		return words.toArray(new String[0]);
 	}
-
+	
+	public void updateModule()
+	{
+		for(Module m : modules)
+		{
+			m.updateModule();
+		}
+	}
 }

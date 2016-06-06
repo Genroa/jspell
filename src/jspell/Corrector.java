@@ -16,7 +16,7 @@ public class Corrector
 	{
 		if(dictionaries.length == 0) throw new IllegalArgumentException("Provide at least one dictionary to work with!");
 		this.dictionaries = dictionaries;
-		this.currentDictionary = dictionaries[0];	
+		this.currentDictionary = dictionaries[0];
 	}
 	
 	

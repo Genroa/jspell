@@ -36,7 +36,7 @@ public class HammingModule implements Module
 	
 	private int hammingDistance(String word1, String word2)
 	{
-		/* decoupage des mots en tableau de caractère */
+		/* decoupage des mots en tableau de caractï¿½re */
 		char[] s1 = word1.toCharArray();
 	    char[] s2 = word2.toCharArray();
 
@@ -44,7 +44,7 @@ public class HammingModule implements Module
 	    int shorter = Math.min(s1.length, s2.length);
 	    int longest = Math.max(s1.length, s2.length);
 
-	    /* calcul à gauche */
+	    /* calcul ï¿½ gauche */
 	    int leftResult = 0;
 	    for (int i=0; i<shorter; i++)
 	    {
@@ -52,7 +52,7 @@ public class HammingModule implements Module
 	    }
 	    leftResult += longest - shorter;
 	    
-	    /* calcul à droite */
+	    /* calcul ï¿½ droite */
 	    int rightResult = 0;
 	    for (int i=0; i<shorter; i++)
 	    {
@@ -83,7 +83,7 @@ public class HammingModule implements Module
 		int averageLength = sumLength/nbWord;
 		int i = 0;
 		String result;
-		/* on modifie pas existingString donc sert à vérifié qu'il y a un mot */
+		/* on modifie pas existingString donc sert ï¿½ vï¿½rifiï¿½ qu'il y a un mot */
 		while(!existingString.isEmpty())
 		{
 			if((result = existingString.get(averageLength + i)) != null)
@@ -106,11 +106,11 @@ public class HammingModule implements Module
 		Arrays.fill(resultDistance, -1);
 		
 		int distanceFromOrigin = hammingDistance(origin, word);
-		/* Création d'un ensemble de mots ayant une distance depuis l'origin entre distanceFromOrigin - 2 et + 2*/
+		/* Crï¿½ation d'un ensemble de mots ayant une distance depuis l'origin entre distanceFromOrigin - 2 et + 2*/
 		Set<String> set = new HashSet<>();
 		for (int count = 0; count <= 2; count++)
 		{
-			/* création du set avec le mot d'une distance de count */
+			/* crï¿½ation du set avec le mot d'une distance de count */
 			set.addAll(harmmingWords.get(distanceFromOrigin + count));
 			set.addAll(harmmingWords.get(distanceFromOrigin - count));
 		}
@@ -162,4 +162,9 @@ public class HammingModule implements Module
 		System.out.println(Arrays.toString(str));
 	}
 	
+	@Override
+	public void updateModule() 
+	{
+		
+	}
 }
