@@ -1,4 +1,4 @@
-package modules;
+package jspell.modules;
 
 import java.io.File;
 import java.io.FileNotFoundException;

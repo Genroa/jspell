@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
 
-import modules.ModuleAggregator;
+import jspell.modules.ModuleAggregator;
 
 public class Dictionary 
 {

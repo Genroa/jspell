@@ -1,4 +1,4 @@
-package modules;
+package jspell.modules;
 
 import java.util.ArrayList;
 import java.util.Arrays;

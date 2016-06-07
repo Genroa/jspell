@@ -1,4 +1,4 @@
-package modules;
+package jspell.modules;
 
 public interface Module
 {
