@@ -44,7 +44,6 @@ public class DamerauLevenshteinModule implements Module
 			}
 		}
 		
-		System.out.println("DL RESULTS="+Arrays.toString(siblings)+"\n"+Arrays.toString(values));
 		return siblings;
 	}
 	

@@ -99,7 +99,7 @@ public class Dictionary
 	{
 		System.out.println("UNIT TEST FOR DICTIONARY");
 		
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
 		Corrector corr = new Corrector(fr, en);
