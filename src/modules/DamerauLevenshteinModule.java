@@ -1,9 +1,11 @@
-package jspell;
+package modules;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Set;
+
+import jspell.Dictionary;
 
 public class DamerauLevenshteinModule implements Module
 {

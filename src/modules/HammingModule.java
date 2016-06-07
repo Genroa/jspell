@@ -1,4 +1,4 @@
-package jspell;
+package modules;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import jspell.Dictionary;
 
 public class HammingModule implements Module
 {
@@ -143,7 +145,20 @@ public class HammingModule implements Module
 		}
 		return result;
 	}
-
+	
+	@Override
+	public void updateModule(String newWord) 
+	{
+		Integer distance = hammingDistance(origin, newWord);
+		Set<String> set = harmmingWords.get(distance);
+		if(set == null)
+		{
+			set = new HashSet<>();
+			harmmingWords.put(distance, set);
+		}
+		set.add(newWord);
+	}
+	
 	public static void main(String[] args) throws FileNotFoundException
 	{
 		System.out.println("UNITARY TEST HAMMING MODULE");
@@ -162,16 +177,5 @@ public class HammingModule implements Module
 		System.out.println(Arrays.toString(str));
 	}
 	
-	@Override
-	public void updateModule(String newWord) 
-	{
-		Integer distance = hammingDistance(origin, newWord);
-		Set<String> set = harmmingWords.get(distance);
-		if(set == null)
-		{
-			set = new HashSet<>();
-			harmmingWords.put(distance, set);
-		}
-		set.add(newWord);
-	}
+
 }

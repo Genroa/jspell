@@ -1,9 +1,11 @@
-package jspell;
+package modules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import jspell.Dictionary;
 
 public class ModuleAggregator implements Module 
 {
@@ -16,6 +18,7 @@ public class ModuleAggregator implements Module
 		this.modules = new LinkedList<Module>();
 			modules.add(new HammingModule(dictionary));
 			modules.add(new DamerauLevenshteinModule(dictionary));
+			modules.add(new SoundexModule(dictionary));
 	}
 	
 	@Override

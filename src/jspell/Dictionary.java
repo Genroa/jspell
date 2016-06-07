@@ -4,20 +4,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Scanner;
+
+import modules.ModuleAggregator;
 
 public class Dictionary 
 {
 	private final HashMap<String, Integer> words;
 	private final String name;
 	private final ModuleAggregator siblingsSearcher;
+	private final Locale locale;
 	
-	public Dictionary(String name, File f) throws FileNotFoundException
+	public Dictionary(String name, File f, Locale locale) throws FileNotFoundException
 	{
 		words = new HashMap<>();
 		buildWordsList(f);
 		this.name = name;
+		this.locale = locale;
 		this.siblingsSearcher = new ModuleAggregator(this);
+	}
+	
+	public Dictionary(String name, File f) throws FileNotFoundException
+	{
+		this(name, f, Locale.US);
 	}
 	
 	private void buildWordsList(File f) throws FileNotFoundException
@@ -62,6 +72,11 @@ public class Dictionary
 		return words;
 	}
 	
+	public Locale getLocale() 
+	{
+		return locale;
+	}
+
 	public double getProbability(String s)
 	{
 		Integer occurence = words.get(s);
