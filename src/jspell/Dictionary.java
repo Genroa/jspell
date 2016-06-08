@@ -104,9 +104,6 @@ public class Dictionary
 		
 		Corrector corr = new Corrector(fr, en);
 		
-		corr.selectBestDictionary(new File("shakespeare.txt"));
-		corr.selectBestDictionary(new File("demain.txt"));
-		
 		corr.annotateText(new File("shakespeare.txt"), new File("output.txt"));
 		corr.annotateText(new File("demain.txt"), new File("output2.txt"));
 	}

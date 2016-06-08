@@ -20,7 +20,7 @@ public class Corrector
 	}
 	
 	
-	public void selectBestDictionary(File f)
+	private void selectBestDictionary(File f)
 	{
 		int[] errors = new int[dictionaries.length];
 		
