@@ -2,7 +2,11 @@ package jspell;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
@@ -13,6 +17,7 @@ public class Dictionary
 {
 	private final HashMap<String, Integer> words;
 	private final String name;
+	private final File file;
 	private final ModuleAggregator siblingsSearcher;
 	private final Locale locale;
 	
@@ -20,6 +25,7 @@ public class Dictionary
 	{
 		words = new HashMap<>();
 		buildWordsList(f);
+		this.file = f;
 		this.name = name;
 		this.locale = locale;
 		this.siblingsSearcher = new ModuleAggregator(this);
@@ -84,9 +90,21 @@ public class Dictionary
 		return (double)occurence/(double)words.size();
 	}
 	
-	public void addToDictionary(String s)
+	public void addToDictionary(String word)
 	{
-		words.put(s, 1);
+		word = word.toLowerCase();
+		words.put(word, 1);
+		siblingsSearcher.updateModule(word);
+		
+		try 
+		{
+		    Files.write(Paths.get(file.getAbsolutePath()), ("\r\n"+word).getBytes(), StandardOpenOption.APPEND);
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+			System.err.println("Can't write to the dictionary file "+file.getAbsolutePath());
+		}
 	}
 	
 	public String[] getNearestSiblings(String word)
@@ -105,7 +123,5 @@ public class Dictionary
 		Corrector corr = new Corrector(fr, en);
 
 		corr.correctFile(new File("demain.txt"));
-		
-		
 	}
 }

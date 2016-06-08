@@ -25,12 +25,13 @@ public class ModuleAggregator implements Module
 	public String[] getNearestSiblings(String word)
 	{
 		List<String> words = new ArrayList<>();
+		
 		for(Module m : modules)
 		{
 			words.addAll(Arrays.asList(m.getNearestSiblings(word)));
 		}
-		
-		return words.subList(0, 7).toArray(new String[0]);
+		int max = Math.min(7, words.size());
+		return words.subList(0, max).toArray(new String[0]);
 	}
 	
 	public void updateModule(String newWord)

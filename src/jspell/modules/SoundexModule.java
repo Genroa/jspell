@@ -106,7 +106,7 @@ public class SoundexModule implements Module
 	{
 		String soundex = buildSoundex(word);
 		Set<String> set = soundexWords.get(soundex);
-		if(set == null) return null;
+		if(set == null) return new String[0];
 		
 		return set.toArray(new String[0]);
 	}

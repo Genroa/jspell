@@ -1,14 +1,17 @@
 package jspell;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Corrector 
@@ -91,7 +94,7 @@ public class Corrector
 	
 	private void annotateText(File input, File output)
 	{
-		System.out.println("Anotating the text \""+input.getName()+"\" and saving it to \""+output.getName()+"\"...");
+		System.out.println("Anotating the text \""+input.getAbsolutePath()+"\" and saving it to \""+output.getAbsolutePath()+"\"...");
 		selectBestDictionary(input);
 		
 		try(FileWriter fw = new FileWriter(output); Scanner s = new Scanner(input, StandardCharsets.UTF_8.name()))
@@ -158,51 +161,105 @@ public class Corrector
 	
 	public void correctFile(File f)
 	{
-		File anotatedText = new File(f.getName()+".anot");
+		File anotatedText = new File(f.getAbsolutePath()+".anot");
+		List<String> customWords = new LinkedList<>();
 		
 		annotateText(f, anotatedText);
 		
-		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); Scanner input = new Scanner(System.in))
+		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
+			Scanner input = new Scanner(System.in);
+			FileWriter fw = new FileWriter(f.getAbsolutePath()+".tmp", true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter out = new PrintWriter(bw))
 		{
 			while(s.hasNextLine())
 			{
 				String line = s.nextLine();
 				List<List<String>> errors = new LinkedList<List<String>>();
 				
-				String displayLine = buildDisplayLine(line, errors);
+				String displayLine = buildDisplayLine(line, errors, customWords);
 				
-				displayLine = correctLine(displayLine, errors, input);
+				displayLine = correctLine(displayLine, errors, input, customWords);
+				
+				out.println(displayLine);
 			}
 		} 
 		catch (FileNotFoundException e)
 		{
 			System.out.println("Could not open the anotated text!");
+		} 
+		catch (IOException e1) 
+		{
+			
 		}
+		
+		f.delete();
+		anotatedText.delete();
+		File outputFile = new File(f.getAbsolutePath()+".tmp");
+		outputFile.renameTo(f);
+		
+		ScreenUtils.clearScreen();
+		System.out.println("Correction du fichier terminée.");
 	}
 	
 	private int getChoice(Scanner input)
 	{
 		int choice = -1;
-		boolean tmp = false;
 		
 		while(choice < 0 || choice > 9)
 		{
 			System.out.println("Enter your choice : ");
-		
-			choice = input.nextInt();
+			
+			try
+			{
+				choice = input.nextInt();
+			}
+			catch(InputMismatchException e)
+			{
+				System.out.println("Please enter a choice between 0 and 9.");
+				choice = -1;
+			}
 			input.nextLine();
 		}
 		return choice;
 	}
 	
-	private String correctLine(String displayLine, List<List<String>> errors, Scanner input)
+	private String correctLine(String displayLine, List<List<String>> errors, Scanner input, List<String> customWords)
 	{
 		for(List<String> words : errors)
 		{
-			displayPropositions(displayLine, words);
+			if(customWords.contains(words.get(0).toLowerCase()) || currentDictionary.containsWord(words.get(0)))
+			{
+				continue;
+			}
 			
+			displayPropositions(displayLine, words);
 			int choice = getChoice(input);
+			if(choice < words.size()-1)
+			{
+				displayLine = displayLine.replaceFirst("\\*\\*"+words.get(0)+"\\*\\*", words.get(choice+1));
+			}
+			// Ignore
+			else if(choice == words.size()-1)
+			{
+				displayLine = displayLine.replaceFirst("\\*\\*"+words.get(0)+"\\*\\*", words.get(0));
+			}
+			// Ignore all
+			else if(choice == words.size())
+			{
+				displayLine = displayLine.replaceAll("\\*\\*"+words.get(0)+"\\*\\*", words.get(0));
+				displayLine = displayLine.replaceAll("\\*\\*"+words.get(0).toLowerCase()+"\\*\\*", words.get(0).toLowerCase());
+				customWords.add(words.get(0).toLowerCase());
+			}
+			// Add to dictionary
+			else if(choice == words.size()+1)
+			{
+				displayLine = displayLine.replaceAll("\\*\\*"+words.get(0)+"\\*\\*", words.get(0));
+				displayLine = displayLine.replaceAll("\\*\\*"+words.get(0).toLowerCase()+"\\*\\*", words.get(0).toLowerCase());
+				currentDictionary.addToDictionary(words.get(0));
+			}
 		}
+		
 		return displayLine;
 	}
 	
@@ -210,22 +267,27 @@ public class Corrector
 	{
 		ScreenUtils.clearScreen();
 		System.out.println(displayLine);
-		String error = words.remove(0);
+		String error = words.get(0);
 		System.out.println("Word : "+error);
 		System.out.println("Propositions :");
 		int i = 0;
 		for(String word : words)
 		{
-			System.out.println(i+" - replace with "+word);
+			if(i==0) 
+			{
+				i++;
+				continue;
+			}
+			System.out.println(i-1+" - replace with "+word);
 			i++;
 		}
-		System.out.println(i+" - ignore this word"); i++;
-		System.out.println(i+" - ignore all occurences this word"); i++;
-		System.out.println(i+" - add \""+error+"\" to dictionary");
+		System.out.println(i-1+" - ignore this word"); i++;
+		System.out.println(i-1+" - ignore all occurences this word"); i++;
+		System.out.println(i-1+" - add \""+error+"\" to dictionary");
 	}
 	
 	
-	private String buildDisplayLine(String line, List<List<String>> errors)
+	private String buildDisplayLine(String line, List<List<String>> errors, List<String> customWords)
 	{
 		String displayLine = "";
 		
@@ -246,12 +308,20 @@ public class Corrector
 				
 				String word = line.substring(lastIndex, endOfWord);
 				
-				List<String> words = new LinkedList<String>();
-				words.add(word);
-				words.addAll(Arrays.asList(line.substring(endOfWord+1, line.indexOf("</spell>", endOfWord+1)).split(",")));
-				errors.add(words);
+				if(!customWords.contains(word.toLowerCase()) && !currentDictionary.containsWord(word))
+				{
+					List<String> words = new ArrayList<String>();
+					words.add(word);
+					words.addAll(Arrays.asList(line.substring(endOfWord+1, line.indexOf("</spell>", endOfWord+1)).split(",")));
+					errors.add(words);
+					
+					displayLine+= "**"+word+"**";
+				}
+				else
+				{
+					displayLine+=word;
+				}
 				
-				displayLine+= "**"+word+"**";
 				
 				lastIndex = line.indexOf("</spell>", endOfWord)+"</spell>".length();
 				
