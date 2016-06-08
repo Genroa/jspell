@@ -16,8 +16,8 @@ public class ModuleAggregator implements Module
 	{
 		this.dictionary = d;
 		this.modules = new LinkedList<Module>();
-			modules.add(new HammingModule(dictionary));
 			modules.add(new DamerauLevenshteinModule(dictionary));
+			modules.add(new HammingModule(dictionary));
 			modules.add(new SoundexModule(dictionary));
 	}
 	
@@ -30,7 +30,7 @@ public class ModuleAggregator implements Module
 			words.addAll(Arrays.asList(m.getNearestSiblings(word)));
 		}
 		
-		return words.toArray(new String[0]);
+		return words.subList(0, 7).toArray(new String[0]);
 	}
 	
 	public void updateModule(String newWord)
