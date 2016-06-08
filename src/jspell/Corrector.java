@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Corrector 
@@ -85,7 +88,7 @@ public class Corrector
 		return currentDictionary.getNearestSiblings(word);
 	}
 	
-	public void annotateText(File input, File output)
+	private void annotateText(File input, File output)
 	{
 		System.out.println("Anotating the text \""+input.getName()+"\" and saving it to \""+output.getName()+"\"...");
 		selectBestDictionary(input);
@@ -148,5 +151,89 @@ public class Corrector
 		}
 		
 		System.out.println("Done.");
+	}
+	
+	
+	
+	public void correctFile(File f)
+	{
+		File anotatedText = new File(f.getName()+".anot");
+		
+		annotateText(f, anotatedText);
+		
+		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()))
+		{
+			while(s.hasNextLine())
+			{
+				String line = s.nextLine();
+				List<List<String>> errors = new LinkedList<List<String>>();
+				String displayLine = buildDisplayLine(line, errors);
+				
+				for(List<String> words : errors)
+				{
+					// Screenutils.clearScreen();
+					System.out.println(displayLine);
+					String error = words.remove(0);
+					System.out.println("Word : "+error);
+					System.out.println("Propositions :");
+					int i = 0;
+					for(String word : words)
+					{
+						System.out.println(i+" - replace with "+word);
+						i++;
+					}
+					System.out.println(i+" - ignore this word"); i++;
+					System.out.println(i+" - ignore all occurences this word"); i++;
+					System.out.println(i+" - add this word to dictionary");
+										
+				}
+			}
+		} 
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Could not open the anotated text!");
+		}
+	}
+	
+	private String buildDisplayLine(String line, List<List<String>> errors)
+	{
+		String displayLine = "";
+		
+		int firstOc;
+		int lastIndex = 0;
+		do
+		{
+			firstOc = line.indexOf("<spell>", lastIndex);
+			
+			// Si on a trouvé une occurence
+			if(firstOc != -1)
+			{
+				// Avant l'occurence
+				displayLine+= line.substring(lastIndex, firstOc);
+				// Le mot dans <spell>
+				lastIndex = firstOc+"<spell>".length();
+				int endOfWord = line.indexOf("|", lastIndex);
+				
+				String word = line.substring(lastIndex, endOfWord);
+				
+				List<String> words = new LinkedList<String>();
+				words.add(word);
+				words.addAll(Arrays.asList(line.substring(endOfWord+1, line.indexOf("</spell>", endOfWord+1)).split(",")));
+				errors.add(words);
+				
+				displayLine+= "**"+word+"**";
+				
+				lastIndex = line.indexOf("</spell>", endOfWord)+"</spell>".length();
+				
+			}
+			else
+			{
+				displayLine+= line.substring(lastIndex);
+				break;
+			}
+		}
+		while(firstOc != -1);
+		
+		return displayLine;
 	}
 }

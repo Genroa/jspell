@@ -158,8 +158,8 @@ public class SoundexModule implements Module
 	
 	public static void main(String[] args) throws FileNotFoundException 
 	{
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
+		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
 		SoundexModule sm = new SoundexModule(fr);
-		System.out.println(sm.buildSoundex("amhmter"));
+		System.out.println(sm.buildSoundex("bitonnet"));
 	}
 }

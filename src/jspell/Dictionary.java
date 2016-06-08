@@ -103,8 +103,9 @@ public class Dictionary
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
 		Corrector corr = new Corrector(fr, en);
+
+		corr.correctFile(new File("demain.txt"));
 		
-		corr.annotateText(new File("shakespeare.txt"), new File("output.txt"));
-		corr.annotateText(new File("demain.txt"), new File("output2.txt"));
+		
 	}
 }
