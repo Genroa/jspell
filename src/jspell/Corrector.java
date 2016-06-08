@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Corrector 
@@ -161,32 +162,16 @@ public class Corrector
 		
 		annotateText(f, anotatedText);
 		
-		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()))
+		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); Scanner input = new Scanner(System.in))
 		{
 			while(s.hasNextLine())
 			{
 				String line = s.nextLine();
 				List<List<String>> errors = new LinkedList<List<String>>();
+				
 				String displayLine = buildDisplayLine(line, errors);
 				
-				for(List<String> words : errors)
-				{
-					// Screenutils.clearScreen();
-					System.out.println(displayLine);
-					String error = words.remove(0);
-					System.out.println("Word : "+error);
-					System.out.println("Propositions :");
-					int i = 0;
-					for(String word : words)
-					{
-						System.out.println(i+" - replace with "+word);
-						i++;
-					}
-					System.out.println(i+" - ignore this word"); i++;
-					System.out.println(i+" - ignore all occurences this word"); i++;
-					System.out.println(i+" - add this word to dictionary");
-										
-				}
+				displayLine = correctLine(displayLine, errors, input);
 			}
 		} 
 		catch (FileNotFoundException e)
@@ -194,6 +179,51 @@ public class Corrector
 			System.out.println("Could not open the anotated text!");
 		}
 	}
+	
+	private int getChoice(Scanner input)
+	{
+		int choice = -1;
+		boolean tmp = false;
+		
+		while(choice < 0 || choice > 9)
+		{
+			System.out.println("Enter your choice : ");
+		
+			choice = input.nextInt();
+			input.nextLine();
+		}
+		return choice;
+	}
+	
+	private String correctLine(String displayLine, List<List<String>> errors, Scanner input)
+	{
+		for(List<String> words : errors)
+		{
+			displayPropositions(displayLine, words);
+			
+			int choice = getChoice(input);
+		}
+		return displayLine;
+	}
+	
+	private void displayPropositions(String displayLine, List<String> words)
+	{
+		ScreenUtils.clearScreen();
+		System.out.println(displayLine);
+		String error = words.remove(0);
+		System.out.println("Word : "+error);
+		System.out.println("Propositions :");
+		int i = 0;
+		for(String word : words)
+		{
+			System.out.println(i+" - replace with "+word);
+			i++;
+		}
+		System.out.println(i+" - ignore this word"); i++;
+		System.out.println(i+" - ignore all occurences this word"); i++;
+		System.out.println(i+" - add \""+error+"\" to dictionary");
+	}
+	
 	
 	private String buildDisplayLine(String line, List<List<String>> errors)
 	{
