@@ -9,16 +9,14 @@ import jspell.Dictionary;
 
 public class ModuleAggregator implements Module 
 {
-	private final Dictionary dictionary;
 	List<Module> modules;
 	
 	public ModuleAggregator(Dictionary d)
 	{
-		this.dictionary = d;
 		this.modules = new LinkedList<Module>();
-			modules.add(new DamerauLevenshteinModule(dictionary));
-			modules.add(new HammingModule(dictionary));
-			modules.add(new SoundexModule(dictionary));
+			modules.add(new DamerauLevenshteinModule(d));
+			modules.add(new HammingModule(d));
+			modules.add(new SoundexModule(d));
 	}
 	
 	@Override
