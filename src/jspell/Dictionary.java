@@ -114,14 +114,16 @@ public class Dictionary
 	
 	
 	public static void main(String[] args) throws FileNotFoundException 
-	{
-		System.out.println("UNIT TEST FOR DICTIONARY");
-		
+	{		
 		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
 		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
 		
 		Corrector corr = new Corrector(fr, en);
+		
+		if(args.length == 0)
+			throw new IllegalArgumentException("The program at least one argument");
 
-		corr.correctFile(new File("demain.txt"));
+		for(String fileName : args)
+			corr.correctFile(new File(fileName));
 	}
 }
