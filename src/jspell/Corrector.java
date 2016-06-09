@@ -96,7 +96,6 @@ public class Corrector
 	private void annotateText(File input, File output)
 	{
 		System.out.println("Anotating the text \""+input.getAbsolutePath()+"\" and saving it to \""+output.getAbsolutePath()+"\"...");
-		selectBestDictionary(input);
 		
 		try(FileWriter fw = new FileWriter(output); Scanner s = new Scanner(input, StandardCharsets.UTF_8.name()))
 		{
@@ -165,6 +164,7 @@ public class Corrector
 		File anotatedText = new File(f.getAbsolutePath()+".anot");
 		List<String> customWords = new LinkedList<>();
 		
+		selectBestDictionary(f);
 		annotateText(f, anotatedText);
 		
 		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
