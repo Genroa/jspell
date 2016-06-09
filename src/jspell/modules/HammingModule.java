@@ -13,7 +13,7 @@ import jspell.Dictionary;
  * <br> - it calculates the average length of the words of the dictionary
  * <br> - it chooses a word with this length, or the nearest length found
  * <br> - it sorts words according to their distance from this word.
- * <br><br>
+ * <br><br> 
  * When searching for a word, it will calculates its distance from the origin word, and then only search for siblings in its own circle, and a defined number of circles around, to prevent
  * it from searching for siblings in the whole dictionary if possible.
  */
