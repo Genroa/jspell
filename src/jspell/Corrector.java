@@ -349,15 +349,11 @@ public class Corrector
 		if(args.length == 0)
 			throw new IllegalArgumentException("The program at least one argument");
 
-		for(String fileName : args)
-		{
-			File f = new File(fileName);
-			if(!f.exists()) { 
-			    System.err.println("The file " + f.getAbsolutePath() + " doesn't exist or it's a directory.");
-			    continue;
-			}
-			System.out.println(f);
-			corr.correctFile(f);
+		File f = new File(args[0]);
+		if(!f.exists()) { 
+		    System.err.println("The file " + f.getAbsolutePath() + " doesn't exist or it's a directory.");
+		    return;
 		}
+		corr.correctFile(f);
 	}
 }
