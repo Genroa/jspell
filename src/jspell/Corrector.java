@@ -346,7 +346,7 @@ public class Corrector
 	 * @param line the original line
 	 * @param errors a list containing for each error the list of propositions
 	 * @param customWords the list of the ignored words for this session
-	 * @returnthe formatted string
+	 * @return the formatted string
 	 */
 	private String buildDisplayLine(String line, List<List<String>> errors, List<String> customWords)
 	{
@@ -400,7 +400,8 @@ public class Corrector
 	
 	/**
 	 * Main method of the program. 
-	 * @throws FileNotFoundException
+	 * @param args Arguments of the program
+	 * @throws FileNotFoundException if the file isn't found
 	 */
 	public static void main(String[] args) throws FileNotFoundException 
 	{		

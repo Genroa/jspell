@@ -1,7 +1,5 @@
 package jspell.modules;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,8 +10,12 @@ import java.util.Set;
 
 import jspell.Dictionary;
 
+/**
+ * This class implements the {@link Module} interface with the Soundex algorithm. The Dictionary Locale is taken in account : the letters categories will be ajusted to fit the locale, Locale.FRENCH or Locale.US.
+ * The class bakes the soundex ids linked to each and every word in the dictionary.
+ */
 public class SoundexModule implements Module
-{	
+{
 	private final Dictionary dictionary;
 	private final HashMap<String, Set<String>> soundexWords;
 	private char[][] categories;
@@ -153,13 +155,5 @@ public class SoundexModule implements Module
 							{'R'}
 						};
 		}
-	}
-	
-	
-	public static void main(String[] args) throws FileNotFoundException 
-	{
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
-		SoundexModule sm = new SoundexModule(fr);
-		System.out.println(sm.buildSoundex("bitonnet"));
 	}
 }

@@ -7,6 +7,9 @@ import java.util.List;
 
 import jspell.Dictionary;
 
+/**
+ * A Module regrouping all other modules and gathering their answers when a search is asked. The {@link DamerauLevenshteinModule} is considered the most precise module, with {@link HammingModule} and {@link SoundexModule} behind.
+ */
 public class ModuleAggregator implements Module 
 {
 	List<Module> modules;

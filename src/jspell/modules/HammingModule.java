@@ -1,7 +1,5 @@
 package jspell.modules;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +8,15 @@ import java.util.Set;
 
 import jspell.Dictionary;
 
+/**
+ * This class implements the {@link Module} interface with the Hamming algorithm. It also bakes each word of the dictionary with a circle system:
+ * <br> - it calculates the average length of the words of the dictionary
+ * <br> - it chooses a word with this length, or the nearest length found
+ * <br> - it sorts words according to their distance from this word.
+ * <br><br>
+ * When searching for a word, it will calculates its distance from the origin word, and then only search for siblings in its own circle, and a defined number of circles around, to prevent
+ * it from searching for siblings in the whole dictionary if possible.
+ */
 public class HammingModule implements Module
 {
 	
@@ -158,24 +165,5 @@ public class HammingModule implements Module
 		}
 		set.add(newWord);
 	}
-	
-	public static void main(String[] args) throws FileNotFoundException
-	{
-		System.out.println("UNITARY TEST HAMMING MODULE");
-
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
-		
-		HammingModule hm = new HammingModule(fr);
-		
-		String[] str = hm.getNearestSiblings("praphrase");
-		System.out.println(Arrays.toString(str));
-		str = hm.getNearestSiblings("alfabet");
-		System.out.println(Arrays.toString(str));
-		str = hm.getNearestSiblings("propocition");
-		System.out.println(Arrays.toString(str));
-		str = hm.getNearestSiblings("apelle");
-		System.out.println(Arrays.toString(str));
-	}
-	
 
 }

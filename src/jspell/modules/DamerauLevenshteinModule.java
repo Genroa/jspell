@@ -1,12 +1,13 @@
 package jspell.modules;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Set;
 
 import jspell.Dictionary;
 
+/**
+ * This class implements the {@link Module} interface by searching siblings with the Damerau-Levenshtein algorithm.
+ */
 public class DamerauLevenshteinModule implements Module
 {
 	private final Dictionary dictionary;
@@ -47,8 +48,6 @@ public class DamerauLevenshteinModule implements Module
 		return siblings;
 	}
 	
-	
-	
 	private int calculateDL(String w1, String w2)
 	{
 		int l1 = w1.length();
@@ -87,18 +86,5 @@ public class DamerauLevenshteinModule implements Module
         
 	    
 		return values[l1][l2];
-	}
-	
-	
-	public static void main(String[] args) throws FileNotFoundException 
-	{
-		System.out.println("UNITARY TEST HAMMING MODULE");
-
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"));
-		
-		DamerauLevenshteinModule hm = new DamerauLevenshteinModule(fr);
-		
-		String[] str = hm.getNearestSiblings("paraphrase");
-		System.out.println(Arrays.toString(str));
 	}
 }
