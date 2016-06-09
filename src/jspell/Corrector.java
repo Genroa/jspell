@@ -247,12 +247,11 @@ public class Corrector
 				}
 				
 				f.delete();
-				anotatedText.delete();
 				File outputFile = new File(f.getAbsolutePath()+".tmp");
 				outputFile.renameTo(f);
 		}
 		
-		
+		anotatedText.delete();
 		ScreenUtils.clearScreen();
 		System.out.println("Correction du fichier terminée.");
 		if(errorsNb == 0)
