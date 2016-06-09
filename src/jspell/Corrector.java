@@ -13,6 +13,7 @@ import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -124,11 +125,12 @@ public class Corrector
 	 * Anotates a text with the propositions for each unknown word (provided by getNearestSiblings).
 	 * @param input the input text file to anotate
 	 * @param output the name of the anotated text file
+	 * @return the number of errors found
 	 */
-	private void annotateText(File input, File output)
+	private int annotateText(File input, File output)
 	{
 		System.out.println("Anotating the text \""+input.getAbsolutePath()+"\" and saving it to \""+output.getAbsolutePath()+"\"...");
-		
+		int errorsNb = 0;
 		try(FileWriter fw = new FileWriter(output); Scanner s = new Scanner(input, StandardCharsets.UTF_8.name()))
 		{
 			boolean punct =true;
@@ -166,6 +168,7 @@ public class Corrector
 						spelling.setLength(spelling.length()-1);
 						spelling.append("</spell>");
 						fw.write(spelling.toString());
+						errorsNb++;
 					}
 				}
 				else
@@ -185,8 +188,15 @@ public class Corrector
 		{
 			System.err.println("Could not open the input file, or create the output file.");
 		}
+		catch(NoSuchElementException ex)
+		{
+			System.out.println("The file is empty.");
+			output.delete();
+			System.exit(0);
+		}
 		
 		System.out.println("Done.");
+		return errorsNb;
 	}
 	
 	
@@ -200,43 +210,49 @@ public class Corrector
 		List<String> customWords = new LinkedList<>();
 		
 		selectBestDictionary(f);
-		annotateText(f, anotatedText);
+		int errorsNb = annotateText(f, anotatedText);
 		
-		try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
-			Scanner input = new Scanner(System.in);
-			FileWriter fw = new FileWriter(f.getAbsolutePath()+".tmp", true);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter out = new PrintWriter(bw))
+		if(errorsNb > 0)
 		{
-			while(s.hasNextLine())
-			{
-				String line = s.nextLine();
-				List<List<String>> errors = new LinkedList<List<String>>();
-				
-				String displayLine = buildDisplayLine(line, errors, customWords);
-				
-				displayLine = correctLine(displayLine, errors, input, customWords);
+			try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
+					Scanner input = new Scanner(System.in);
+					FileWriter fw = new FileWriter(f.getAbsolutePath()+".tmp", true);
+					BufferedWriter bw = new BufferedWriter(fw);
+					PrintWriter out = new PrintWriter(bw))
+				{
+					while(s.hasNextLine())
+					{
+						String line = s.nextLine();
+						List<List<String>> errors = new LinkedList<List<String>>();
+						
+						String displayLine = buildDisplayLine(line, errors, customWords);
+						
+						displayLine = correctLine(displayLine, errors, input, customWords);
 
-				out.println(displayLine);
-				out.flush();
-			}
-		} 
-		catch (FileNotFoundException e)
-		{
-			System.out.println("Could not open the anotated text!");
-		} 
-		catch (IOException e1) 
-		{
-			
+						out.println(displayLine);
+						out.flush();
+					}
+				} 
+				catch (FileNotFoundException e)
+				{
+					System.out.println("Could not open the anotated text!");
+				} 
+				catch (IOException e1) 
+				{
+					
+				}
+				
+				f.delete();
+				anotatedText.delete();
+				File outputFile = new File(f.getAbsolutePath()+".tmp");
+				outputFile.renameTo(f);
 		}
 		
-		f.delete();
-		anotatedText.delete();
-		File outputFile = new File(f.getAbsolutePath()+".tmp");
-		outputFile.renameTo(f);
 		
 		ScreenUtils.clearScreen();
 		System.out.println("Correction du fichier terminée.");
+		if(errorsNb == 0)
+			System.out.println("(pas d'erreur trouvée)");
 	}
 	
 	/**
