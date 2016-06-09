@@ -353,7 +353,8 @@ public class Corrector
 		{
 			File f = new File(fileName);
 			if(!f.exists()) { 
-			    throw new IllegalArgumentException("The file " + f.getAbsolutePath() + " doesn't exist or it's a directory.");
+			    System.err.println("The file " + f.getAbsolutePath() + " doesn't exist or it's a directory.");
+			    continue;
 			}
 			System.out.println(f);
 			corr.correctFile(f);
