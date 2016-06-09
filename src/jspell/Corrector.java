@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Corrector 
@@ -180,8 +181,9 @@ public class Corrector
 				String displayLine = buildDisplayLine(line, errors, customWords);
 				
 				displayLine = correctLine(displayLine, errors, input, customWords);
-				
+
 				out.println(displayLine);
+				out.flush();
 			}
 		} 
 		catch (FileNotFoundException e)
@@ -335,5 +337,26 @@ public class Corrector
 		while(firstOc != -1);
 		
 		return displayLine;
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException 
+	{		
+		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
+		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
+		
+		Corrector corr = new Corrector(fr, en);
+		
+		if(args.length == 0)
+			throw new IllegalArgumentException("The program at least one argument");
+
+		for(String fileName : args)
+		{
+			File f = new File(fileName);
+			if(!f.exists()) { 
+			    throw new IllegalArgumentException("The file " + f.getAbsolutePath() + " doesn't exist or it's a directory.");
+			}
+			System.out.println(f);
+			corr.correctFile(f);
+		}
 	}
 }

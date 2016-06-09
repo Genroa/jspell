@@ -59,8 +59,6 @@ public class Dictionary
 				}
 			}
 		}
-		
-		System.out.println(words.size()+" mots chargés.");
 	}
 	
 	public boolean containsWord(String w)
@@ -110,20 +108,5 @@ public class Dictionary
 	public String[] getNearestSiblings(String word)
 	{
 		return siblingsSearcher.getNearestSiblings(word);
-	}
-	
-	
-	public static void main(String[] args) throws FileNotFoundException 
-	{		
-		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
-		Dictionary en = new Dictionary("English", new File("dic/english.txt"));
-		
-		Corrector corr = new Corrector(fr, en);
-		
-		if(args.length == 0)
-			throw new IllegalArgumentException("The program at least one argument");
-
-		for(String fileName : args)
-			corr.correctFile(new File(fileName));
 	}
 }
