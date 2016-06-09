@@ -399,7 +399,7 @@ public class Corrector
 	}
 	
 	/**
-	 * Main method of the program.
+	 * Main method of the program. 
 	 * @throws FileNotFoundException
 	 */
 	public static void main(String[] args) throws FileNotFoundException 
