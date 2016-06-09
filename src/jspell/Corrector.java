@@ -161,7 +161,7 @@ public class Corrector
 					}
 					else
 					{
-						//System.out.println("Word \""+w+"\" mispelled");
+						System.out.println("Word \""+w+"\" mispelled");
 						StringBuilder spelling = new StringBuilder("<spell>"+w+"|");
 						String[] siblings = getNearestSiblings(w);
 						for(String sibling : siblings) spelling.append(sibling).append(",");
@@ -176,13 +176,14 @@ public class Corrector
 					fw.write(w);
 				}
 				
-				
 				punct = !punct;
 				if(punct)
 					s.useDelimiter("[\\p{Alnum}]");
 				else
 					s.useDelimiter("[\\p{Punct}\\p{Space}]+");
 			}
+			fw.flush();
+			fw.close();
 		}
 		catch(IOException e)
 		{
@@ -214,11 +215,12 @@ public class Corrector
 		
 		if(errorsNb > 0)
 		{
+			System.out.println("Launching correction");
 			try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
-					Scanner input = new Scanner(System.in);
-					FileWriter fw = new FileWriter(f.getAbsolutePath()+".tmp", true);
-					BufferedWriter bw = new BufferedWriter(fw);
-					PrintWriter out = new PrintWriter(bw))
+				Scanner input = new Scanner(System.in);
+				FileWriter fw = new FileWriter(f.getAbsolutePath()+".tmp", true);
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter out = new PrintWriter(bw))
 				{
 					while(s.hasNextLine())
 					{
@@ -230,8 +232,8 @@ public class Corrector
 						displayLine = correctLine(displayLine, errors, input, customWords);
 
 						out.println(displayLine);
-						out.flush();
 					}
+					out.flush();
 				} 
 				catch (FileNotFoundException e)
 				{
@@ -239,11 +241,13 @@ public class Corrector
 				} 
 				catch (IOException e1) 
 				{
-					
+					System.err.println("ERROR");
+					e1.printStackTrace();
+					System.exit(-1);
 				}
 				
-				f.delete();
-				anotatedText.delete();
+				//f.delete();
+				//anotatedText.delete();
 				File outputFile = new File(f.getAbsolutePath()+".tmp");
 				outputFile.renameTo(f);
 		}
