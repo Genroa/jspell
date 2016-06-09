@@ -246,8 +246,8 @@ public class Corrector
 					System.exit(-1);
 				}
 				
-				//f.delete();
-				//anotatedText.delete();
+				f.delete();
+				anotatedText.delete();
 				File outputFile = new File(f.getAbsolutePath()+".tmp");
 				outputFile.renameTo(f);
 		}
