@@ -15,11 +15,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Main class, building anotations and running corrections.
+ * 
+ *
+ */
 public class Corrector 
 {
+	/**
+	 * The existing dictionaries
+	 */
 	private final Dictionary[] dictionaries;
+	
+	/**
+	 * The currently used dictionary
+	 */
 	private Dictionary currentDictionary;
 	
+	/**
+	 * Constructor for the Corrector object.
+	 * @param dictionaries the dictionaries the Corrector will be able to use
+	 */
 	public Corrector(Dictionary... dictionaries)
 	{
 		if(dictionaries.length == 0) throw new IllegalArgumentException("Provide at least one dictionary to work with!");
@@ -27,7 +43,10 @@ public class Corrector
 		this.currentDictionary = dictionaries[0];
 	}
 	
-	
+	/**
+	 * Selects the best dictionary for the providen text file, and sets it as the currently used dictionary for the Corrector
+	 * @param f the text file to analyse
+	 */
 	private void selectBestDictionary(File f)
 	{
 		int[] errors = new int[dictionaries.length];
@@ -82,17 +101,30 @@ public class Corrector
 		this.currentDictionary = dictionaries[index];
 	}
 
-
+	/**
+	 * Getter for the currently used dictionary.
+	 * @return the currently used dictionary
+	 */
 	public Dictionary getCurrentDictionary() 
 	{
 		return currentDictionary;
 	}
 	
+	/**
+	 * Returns the nearest words from the providen word.
+	 * @param word the unknown word
+	 * @return an array containing the siblings found from the word
+	 */
 	public String[] getNearestSiblings(String word)
 	{
 		return currentDictionary.getNearestSiblings(word);
 	}
 	
+	/**
+	 * Anotates a text with the propositions for each unknown word (provided by getNearestSiblings).
+	 * @param input the input text file to anotate
+	 * @param output the name of the anotated text file
+	 */
 	private void annotateText(File input, File output)
 	{
 		System.out.println("Anotating the text \""+input.getAbsolutePath()+"\" and saving it to \""+output.getAbsolutePath()+"\"...");
@@ -159,7 +191,10 @@ public class Corrector
 	}
 	
 	
-	
+	/**
+	 * Opens an anotated file and launches the correction process
+	 * @param f the anotated file
+	 */
 	public void correctFile(File f)
 	{
 		File anotatedText = new File(f.getAbsolutePath()+".anot");
@@ -204,6 +239,11 @@ public class Corrector
 		System.out.println("Correction du fichier terminée.");
 	}
 	
+	/**
+	 * Returns the choice entered by the user
+	 * @param input the Scanner used to read the input
+	 * @return the choice
+	 */
 	private int getChoice(Scanner input)
 	{
 		int choice = -1;
@@ -226,6 +266,14 @@ public class Corrector
 		return choice;
 	}
 	
+	/**
+	 * Corrects a line, error by error.
+	 * @param displayLine the formatted line to display
+	 * @param errors a list containing for each error the list of propositions
+	 * @param input the scanner input to read user's answers
+	 * @param customWords the list of the ignored words for this session
+	 * @return the corrected line
+	 */
 	private String correctLine(String displayLine, List<List<String>> errors, Scanner input, List<String> customWords)
 	{
 		for(List<String> words : errors)
@@ -265,6 +313,11 @@ public class Corrector
 		return displayLine;
 	}
 	
+	/**
+	 * Displays the correction menu
+	 * @param displayLine the formatted line to display
+	 * @param words the list words to ignore for this session
+	 */
 	private void displayPropositions(String displayLine, List<String> words)
 	{
 		ScreenUtils.clearScreen();
@@ -288,7 +341,13 @@ public class Corrector
 		System.out.println(i-1+" - add \""+error+"\" to dictionary");
 	}
 	
-	
+	/**
+	 * Builds the formatted line to display from the line read in the anotated file
+	 * @param line the original line
+	 * @param errors a list containing for each error the list of propositions
+	 * @param customWords the list of the ignored words for this session
+	 * @returnthe formatted string
+	 */
 	private String buildDisplayLine(String line, List<List<String>> errors, List<String> customWords)
 	{
 		String displayLine = "";
@@ -339,6 +398,10 @@ public class Corrector
 		return displayLine;
 	}
 	
+	/**
+	 * Main method of the program.
+	 * @throws FileNotFoundException
+	 */
 	public static void main(String[] args) throws FileNotFoundException 
 	{		
 		Dictionary fr = new Dictionary("Francais", new File("dic/francais.txt"), Locale.FRENCH);
