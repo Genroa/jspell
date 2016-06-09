@@ -214,7 +214,7 @@ public class Corrector
 		int errorsNb = annotateText(f, anotatedText);
 		
 		if(errorsNb > 0)
-		{
+		{ 
 			System.out.println("Launching correction");
 			try(Scanner s = new Scanner(anotatedText, StandardCharsets.UTF_8.name()); 
 				Scanner input = new Scanner(System.in);
